@@ -149,7 +149,7 @@ client.on("guildBanAdd", (banGuild, banUser) =>
 		.then((Audits) =>
 	{
 		var ban = Audits.entries.find("target", banUser);
-		console.log(ban.reason);
+		console.log(ban);
 
 		if(!ban.reason) banReason = config.noReason;
 		else banReason = ban.reason;
