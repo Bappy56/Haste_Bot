@@ -4,8 +4,9 @@ const config = require("./hasteconfig.json");
 const help = require("./hastehelp.json");
 const embed = new Discord.RichEmbed();
 var pre;
+var sentMsg;
 
-const version = "Bot version: 0.3.1 ***Alpha***";
+const version = "Bot version: 0.3.2 ***Alpha***";
 
 var afterhours = false;
 
@@ -122,16 +123,21 @@ client.on("message", message =>
 })
 
 //Support channel listener (Replace channel ID with target channel's)
-client.on("message", message =>
+client.on("message", (message) =>
 {
 	if(message.guild.name == "Haste") pre = message.guild.emojis.find("name", "HasteComet").toString().toLowerCase();
 	else pre = config.prefix;
 	var text = message.content.toLowerCase();
 	const supportChan = message.guild.channels.find("name", "support").id;
-
+	if(message.author.bot && message.channel.id === supportChan)
+	{
+		sentMsg = message.createdTimestamp;
+		console.log("Sent msg: "+sentMsg);
+	}
 	if(message.channel.id !== supportChan || !afterhours || message.author.bot || text.startsWith(pre+" offline")) return;
-
-	else if(message.channel.id === supportChan)
+	if(!sentMsg) {}
+	else if((Date.now()-sentMsg) <= 600000) return;
+	if(message.channel.id === supportChan)
 	{
 		message.reply(help.afterhours);
 	}
@@ -140,6 +146,7 @@ client.on("message", message =>
 //Ban event, searches for Audit Log and then redirects to Mod_log
 client.on("guildBanAdd", (banGuild, banUser) =>
 {
+	const errGuild = client.guilds.find("name", "HappyBappy");
 	var banReason;
 	const logs = banGuild.channels.find("name", "mod_log");
 	if(!logs)
@@ -168,12 +175,17 @@ client.on("guildBanAdd", (banGuild, banUser) =>
 		//============================================================
 
 		logs.send(banEmbed);
-	}, (reason) => {console.log("Ban audit logs could not be found because:\n"+reason);})
+	}, (reason) =>
+	{
+		errGuild.channels.find("name", "error-log").send("Ban audit logs could not be found because:\n"+reason);
+		console.log("Ban audit logs could not be found because:\n"+reason);
+	})
 })
 
 //Will activate on any user leaving, however I've limited it to "MEMBER_KICK"
 client.on("guildMemberRemove", (removeUser) =>
 {
+	const errGuild = client.guilds.find("name", "HappyBappy");
 	var kickReason;
 	// console.log(removeUser);
 	const logs = removeUser.guild.channels.find("name", "mod_log");
@@ -204,7 +216,11 @@ client.on("guildMemberRemove", (removeUser) =>
 		//===========================================================
 
 		logs.send(kickEmbed);
-	}, (reason) => {console.log("Kick audit logs could not be found because:\n"+reason);})
+	}, (reason) =>
+	{
+		errGuild.channels.find("name", "error-log").send("Kick audit logs could not be found because:\n"+reason);
+		console.log("Ban audit logs could not be found because:\n"+reason);
+	})
 })
 
 //Calls on a deleted message
@@ -263,4 +279,4 @@ client.on("warn", (w) =>
 client.emojis.find("name", "robot");
  */
 
-client.login(config.token);
+client.login("Mzc4MzU4MTc5OTE2MDIxNzYy.DOa9-w.6rcJwqvnL7kVrp9lrZ5eZk5ZEMY");
