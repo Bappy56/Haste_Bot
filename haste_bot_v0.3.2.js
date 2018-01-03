@@ -279,4 +279,4 @@ client.on("warn", (w) =>
 client.emojis.find("name", "robot");
  */
 
-client.login("Mzc4MzU4MTc5OTE2MDIxNzYy.DOa9-w.6rcJwqvnL7kVrp9lrZ5eZk5ZEMY");
+client.login(config.token);
