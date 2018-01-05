@@ -265,14 +265,24 @@ client.on("error", (e) =>
 {
 	const errGuild = client.guilds.find("name", "HappyBappy");
 	console.error(e);
-	errGuild.channels.find("name", "error-log").send("**__Error:__**\n"+e);
+	errGuild.channels.find("name", "error-logs").send("**__Error:__**\n"+e);
 })
 
 client.on("warn", (w) =>
 {
 	const errGuild = client.guilds.find("name", "HappyBappy");
 	console.warn(w);
-	errGuild.channels.find("name", "error-log").send("**Warning:**\n"+w);
+	errGuild.channels.find("name", "error-logs").send("**Warning:**\n"+w);
+})
+
+client.on("debug", (d) =>
+{
+    console.log("Debugger:\n"+d);
+	errGuild = client.guilds.find("name", "BappyTestingGround");
+	// console.log("Errguild: "+errGuild);
+	if(errGuild === null) return;
+	// console.log(errGuild);
+	errGuild.channels.find("name", "error-logs").send("***Debugger:***\n"+d);
 })
 
 /*
