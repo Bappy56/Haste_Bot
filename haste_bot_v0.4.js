@@ -6,7 +6,7 @@ const embed = new Discord.RichEmbed();
 var pre;
 var sentMsg;
 
-const version = "Bot version: 0.3.2 ***Alpha***";
+const version = "Bot version: 0.4 ***Alpha***";
 
 var afterhours = false;
 
