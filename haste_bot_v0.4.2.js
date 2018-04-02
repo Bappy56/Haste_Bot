@@ -6,7 +6,7 @@ const embed = new Discord.RichEmbed();
 var pre;
 var sentMsg;
 
-const version = "Bot version: 0.4.1 ***Alpha***";
+const version = "Bot version: 0.4.2 ***Alpha***";
 
 var afterhours = false;
 
@@ -125,7 +125,6 @@ client.on("message", message =>
 //Support channel listener (Replace channel ID with target channel's)
 client.on("message", (message) =>
 {
-	const errGuild = client.guilds.find("name", "BappyTestingGround");
 	if(message.guild.name == "Haste") pre = message.guild.emojis.find("name", "HasteComet").toString().toLowerCase();
 	else pre = config.prefix;
 	var text = message.content.toLowerCase();
@@ -133,25 +132,14 @@ client.on("message", (message) =>
 	if(message.author.bot && message.channel.id === supportChan)
 	{
 		sentMsg = message.createdTimestamp;
+		console.log("Sent msg: "+sentMsg);
 	}
 	if(message.channel.id !== supportChan || !afterhours || message.author.bot || text.startsWith(pre+" offline")) return;
 	if(!sentMsg) {}
 	else if((Date.now()-sentMsg) <= 600000) return;
-	if(message.channel.id === supportChan && !message.member.roles.find("name", "Haste Staff") && !message.member.roles.find("name", "Community Moderator")) message.reply(help.afterhours);
-	else if(message.member.roles.find("name", "Haste Staff") || message.member.roles.find("name", "Community Moderator")) message.react("❗");
-})
-
-//Reaction Event
-client.on("messageReactionAdd", (thisReact, reactUser) =>
-{
-	console.log(reactUser);
-	if(reactUser.bot) return;
-	if(thisReact.emoji.name !== "❗") {}
-	else if(thisReact.message.member.roles.find("name", "Haste Staff") || thisReact.message.member.roles.find("name", "Community Moderator"))
+	if(message.channel.id === supportChan)
 	{
-		afterhours = false;
-		thisReact.message.clearReactions();
-		thisReact.message.react("👍")
+		message.reply(help.afterhours);
 	}
 })
 
@@ -163,7 +151,12 @@ client.on("guildBanAdd", (banGuild, banUser) =>
 	const logs = banGuild.channels.find("name", "mod_log");
 	if(!logs)
 	{
-		console.log("Could not find channel.\n"+logs);
+		const badLogsEmbed = new Discord.RichEmbed()
+		//=========================================================
+			.setAuthor("*Console*")
+			.addField("Target Channel Object:", "__Begin__\n"+logs+"\n__End__");
+		//=========================================================
+		errGuild.channels.find("name", "error-log").send("**__No Ban Channel__**\nCould not find channel.\nLine 159\n"+badLogsEmbed);
 		return;
 	}
 
@@ -197,13 +190,19 @@ client.on("guildBanAdd", (banGuild, banUser) =>
 //Will activate on any user leaving, however I've limited it to "MEMBER_KICK"
 client.on("guildMemberRemove", (removeUser) =>
 {
-	const errGuild = client.guilds.find("name", "HappyBappy");
+	const errGuild = client.guilds.find("name", "BappyTestingGround");
 	var kickReason;
 	// console.log(removeUser);
 	const logs = removeUser.guild.channels.find("name", "mod_log");
 	if(!logs)
 	{
-		console.log("Could not find channel.\n"+logs);
+		const badLogsEmbed = new Discord.RichEmbed()
+		//=========================================================
+			.setAuthor("*Console*")
+			.addField("Target Channel Object:", "__Begin__\n"+logs+"\n__End__")
+			.setColor(0, 0, 0);
+		//=========================================================
+		errGuild.channels.find("name", "error-log").send("**__No Kick Channel__**\nCould not find channel.\nLine 204\n"+badLogsEmbed);
 		return;
 	}
 
