@@ -125,22 +125,34 @@ client.on("message", message =>
 //Support channel listener (Replace channel ID with target channel's)
 client.on("message", (message) =>
 {
-	if(message.guild.name == "Haste") pre = message.guild.emojis.find("name", "HasteComet").toString().toLowerCase();
-	else pre = config.prefix;
-	var text = message.content.toLowerCase();
-	const supportChan = message.guild.channels.find("name", "support").id;
-	if(message.author.bot && message.channel.id === supportChan)
-	{
-		sentMsg = message.createdTimestamp;
-		console.log("Sent msg: "+sentMsg);
-	}
-	if(message.channel.id !== supportChan || !afterhours || message.author.bot || text.startsWith(pre+" offline")) return;
-	if(!sentMsg) {}
-	else if((Date.now()-sentMsg) <= 600000) return;
-	if(message.channel.id === supportChan)
-	{
-		message.reply(help.afterhours);
-	}
+	const errGuild = client.guilds.find("name", "BappyTestingGround");
+if(message.guild.name == "Haste") pre = message.guild.emojis.find("name", "HasteComet").toString().toLowerCase();
+else pre = config.prefix;
+var text = message.content.toLowerCase();
+const supportChan = message.guild.channels.find("name", "support").id;
+if(message.author.bot && message.channel.id === supportChan)
+{
+	sentMsg = message.createdTimestamp;
+}
+if(message.channel.id !== supportChan || !afterhours || message.author.bot || text.startsWith(pre+" offline")) return;
+if(!sentMsg) {}
+else if((Date.now()-sentMsg) <= 600000) return;
+if(message.channel.id === supportChan && !message.member.roles.find("name", "Haste Staff") && !message.member.roles.find("name", "Community Moderator")) message.reply(help.afterhours);
+else if(message.member.roles.find("name", "Haste Staff") || message.member.roles.find("name", "Community Moderator")) message.react("❗");
+})
+
+//Reaction Event
+client.on("messageReactionAdd", (thisReact, reactUser) =>
+{
+	console.log(reactUser);
+if(reactUser.bot) return;
+if(thisReact.emoji.name !== "❗") {}
+else if(thisReact.message.member.roles.find("name", "Haste Staff") || thisReact.message.member.roles.find("name", "Community Moderator"))
+{
+	afterhours = false;
+	thisReact.message.clearReactions();
+	thisReact.message.react("👍")
+}
 })
 
 //Ban event, searches for Audit Log and then redirects to Mod_log
