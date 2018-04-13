@@ -19,7 +19,7 @@ Edited with JetBrain's Webstorm
 
 client.on("ready", () =>
 {
-    client.user.setGame("with Haste!");
+    client.user.setActivity("with Haste!");
     console.log("Optimizing Server");
 })
 
