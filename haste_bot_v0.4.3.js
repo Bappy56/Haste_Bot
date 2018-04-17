@@ -19,7 +19,9 @@ Edited with JetBrain's Webstorm
 
 client.on("ready", () =>
 {
-    client.user.setActivity("with Haste!");
+    client.user.setActivity("with Haste!", {type: "PLAYING"})
+		.then(presence => console.log("Activity resolved!"))
+		.catch(console.error);
     console.log("Optimizing Server");
 })
 
