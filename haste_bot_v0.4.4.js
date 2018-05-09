@@ -6,7 +6,7 @@ const embed = new Discord.RichEmbed();
 var pre;
 var sentMsg;
 
-const version = "Bot version: 0.4.3 ***Alpha***";
+const version = "Bot version: 0.4.4 ***Alpha***";
 
 var afterhours = false;
 
@@ -72,10 +72,10 @@ client.on("message", message =>
 
     else if(text.startsWith(pre+" survey"))
     {
-        embed.setTitle("Got a game or region you would like to see supported by Haste? Submit it here!");
+        embed.setTitle("Got a game you would like to see supported by Haste? Submit it here!");
         embed.setAuthor("Haste Auto", client.user.avatarURL);
         embed.setColor(config.color);
-        embed.setURL("https://www.surveymonkey.com/r/HasteGameRegionInterest");
+        embed.setURL("https://www.surveymonkey.com/r/HasteGameInterest");
 
         message.channel.send(embed);
     }
